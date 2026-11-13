@@ -23,7 +23,7 @@ Cover the period since the last episode (normally 24 hours).
   or the balance of power in the world? If not, drop it.
 
 ## 3. Write the script: `episodes/DATE.txt`
-Plain text, exactly what the voice will say. 780 to 900 words (the voice reads about 190 words a minute). The build fails above 950 words or 5 minutes of audio; aim for 4:15 to 4:50.
+Plain text, exactly what the voice will say. 760 to 840 words (the voice reads about 175 words a minute, so 790 words is about 4:35). The build fails above 950 words or 5 minutes of audio.
 1. Opening, one or two sentences: "Good morning Pearce. It's <weekday> the <day> of <month>." then the single biggest thing today.
 2. Markets, about 30 seconds. Rounded numbers. On a Monday, or when markets were shut, give the weekly move instead.
 3. The stories, most important first. Each one: what happened in one or two sentences, then one sentence on why it
