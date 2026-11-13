@@ -1,7 +1,12 @@
 """Turn episodes/DATE.txt into docs/audio/DATE.mp3 and refresh docs/episodes.json and docs/feed.xml.
 
 Usage: python tools/make_episode.py 2026-11-14
-Needs: pip install edge-tts
+
+Two voices engines:
+- edge (default): Microsoft Edge online voices. Needs `pip install edge-tts`. Works from a home connection,
+  but is refused from most data centres.
+- kokoro: the open Kokoro model, run locally with no network. Set BRIEF_TTS=kokoro. Needs
+  `pip install kokoro-onnx soundfile`, ffmpeg, and the two model files in KOKORO_DIR (see the workflow).
 """
 import asyncio
 import datetime as dt
@@ -11,8 +16,14 @@ import sys
 from email.utils import format_datetime
 from xml.sax.saxutils import escape
 
-import edge_tts
+import os
+import subprocess
 
+ENGINE = os.environ.get("BRIEF_TTS", "edge")
+KOKORO_DIR = pathlib.Path(os.environ.get("KOKORO_DIR", "models"))
+KOKORO_VOICE = "af_heart"   # others: bf_emma, am_michael, bm_george (see the kokoro-onnx voice list)
+KOKORO_LANG = "en-us"       # use en-gb with the bf_ / bm_ voices
+KOKORO_SPEED = 1.0
 VOICE = "en-US-AndrewMultilingualNeural"
 RATE = "+8%"
 MAX_WORDS = 950
@@ -25,8 +36,30 @@ DOCS = ROOT / "docs"
 AUDIO = DOCS / "audio"
 
 
+def speak_kokoro(text: str, out: pathlib.Path) -> float:
+    """Local Kokoro voice: one paragraph at a time, joined with short pauses, then encoded to mp3."""
+    import numpy as np
+    import soundfile as sf
+    from kokoro_onnx import Kokoro
+
+    kokoro = Kokoro(str(KOKORO_DIR / "kokoro-v1.0.onnx"), str(KOKORO_DIR / "voices-v1.0.bin"))
+    chunks, rate = [], 24000
+    for para in [p.strip() for p in text.split("
+") if p.strip()]:
+        samples, rate = kokoro.create(para, voice=KOKORO_VOICE, speed=KOKORO_SPEED, lang=KOKORO_LANG)
+        chunks += [samples, np.zeros(int(rate * 0.4), dtype=samples.dtype)]
+    audio = np.concatenate(chunks)
+    wav = out.with_suffix(".wav")
+    sf.write(wav, audio, rate)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(wav), "-ac", "1", "-b:a", "64k",
+                    "-f", "mp3", str(out)], check=True)
+    wav.unlink()
+    return len(audio) / rate
+
+
 async def speak(text: str, out: pathlib.Path) -> float:
     """Write the mp3 and return its length in seconds (from the last word boundary)."""
+    import edge_tts
     end = 0.0
     communicate = edge_tts.Communicate(text, VOICE, rate=RATE, boundary="WordBoundary")
     with open(out, "wb") as f:
@@ -51,7 +84,7 @@ def main() -> None:
     mp3 = AUDIO / f"{date}.mp3"
     part = AUDIO / f"{date}.part"
     try:
-        seconds = asyncio.run(speak(text, part))
+        seconds = speak_kokoro(text, part) if ENGINE == "kokoro" else asyncio.run(speak(text, part))
     except BaseException:
         part.unlink(missing_ok=True)
         raise
