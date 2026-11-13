@@ -6,7 +6,7 @@ Two voices engines:
 - edge (default): Microsoft Edge online voices. Needs `pip install edge-tts`. Works from a home connection,
   but is refused from most data centres.
 - kokoro: the open Kokoro model, run locally with no network. Set BRIEF_TTS=kokoro. Needs
-  `pip install kokoro-onnx soundfile`, ffmpeg, and the two model files in KOKORO_DIR (see the workflow).
+  `pip install kokoro-onnx soundfile` and the two model files in KOKORO_DIR (see the workflow).
 """
 import asyncio
 import datetime as dt
@@ -48,11 +48,7 @@ def speak_kokoro(text: str, out: pathlib.Path) -> float:
         samples, rate = kokoro.create(para, voice=KOKORO_VOICE, speed=KOKORO_SPEED, lang=KOKORO_LANG)
         chunks += [samples, np.zeros(int(rate * 0.4), dtype=samples.dtype)]
     audio = np.concatenate(chunks)
-    wav = out.with_suffix(".wav")
-    sf.write(wav, audio, rate)
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(wav), "-ac", "1", "-b:a", "64k",
-                    "-f", "mp3", str(out)], check=True)
-    wav.unlink()
+    sf.write(str(out), audio, rate, format="MP3")
     return len(audio) / rate
 
 
