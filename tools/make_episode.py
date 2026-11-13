@@ -49,10 +49,20 @@ def main() -> None:
 
     AUDIO.mkdir(parents=True, exist_ok=True)
     mp3 = AUDIO / f"{date}.mp3"
-    seconds = asyncio.run(speak(text, mp3))
+    part = AUDIO / f"{date}.part"
+    try:
+        seconds = asyncio.run(speak(text, part))
+    except BaseException:
+        part.unlink(missing_ok=True)
+        raise
+    if part.stat().st_size < 20000:
+        part.unlink()
+        sys.exit("The speech service returned no audio. Run again.")
+    part.replace(mp3)
     if seconds <= 0:
         seconds = words / 2.9
     if seconds > 300:
+        mp3.unlink()
         sys.exit(f"Audio is {seconds:.0f}s; the limit is 300s. Cut the script and run again.")
 
     meta.update({"date": date, "seconds": round(seconds), "words": words,

@@ -1,0 +1,41 @@
+name: Build episode audio
+on:
+  push:
+    branches: [main]
+    paths: ['episodes/*.txt']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: build-audio
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -q edge-tts
+      - name: Build any missing audio
+        run: |
+          for f in episodes/*.txt; do
+            d=$(basename "$f" .txt)
+            if [ ! -s "docs/audio/$d.mp3" ]; then
+              for i in 1 2 3 4; do
+                python tools/make_episode.py "$d" && break
+                sleep 20
+              done
+              [ -s "docs/audio/$d.mp3" ] || exit 1
+            fi
+          done
+      - name: Commit and push
+        run: |
+          git config user.name "morning-brief-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Audio $(TZ=Australia/Sydney date +%F)"
+            git pull --rebase
+            git push
+          fi

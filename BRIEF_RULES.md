@@ -50,14 +50,17 @@ Writing for the ear:
 ```
 Tags: Economy, Markets, AI, Tech, Health, Politics, World. Sources are the real URLs you used.
 
-## 5. Build and publish
+## 5. Publish
+Do not make the audio yourself: the speech service is not reachable from this sandbox. A GitHub Action in this
+repository builds the MP3 when the script is pushed.
 ```
-pip install -q edge-tts
-python tools/make_episode.py DATE
-git add -A && git commit -m "Brief DATE" && git push
+git add episodes/DATE.txt episodes/DATE.json && git commit -m "Brief DATE" && git push
 ```
-If the push is rejected, `git pull --rebase` and push again. Then wait until
-`https://pogradey.github.io/morning-brief/audio/DATE.mp3` returns HTTP 200 (check every 20 seconds, up to 4 minutes).
+If the push is rejected, `git pull --rebase` and push again. Then check
+`https://pogradey.github.io/morning-brief/audio/DATE.mp3` every 30 seconds for up to 8 minutes until it returns
+HTTP 200 (use one `until` loop, not repeated sleeps). If it never goes live, send the email anyway and say in it that
+the audio is delayed. To learn the audio length for the email subject, `git pull` and read `seconds` for DATE in
+`docs/episodes.json`.
 
 ## 6. Email
 With the Gmail connector, send one email to the address given in the routine prompt:
