@@ -44,8 +44,7 @@ def speak_kokoro(text: str, out: pathlib.Path) -> float:
 
     kokoro = Kokoro(str(KOKORO_DIR / "kokoro-v1.0.onnx"), str(KOKORO_DIR / "voices-v1.0.bin"))
     chunks, rate = [], 24000
-    for para in [p.strip() for p in text.split("
-") if p.strip()]:
+    for para in [p.strip() for p in text.splitlines() if p.strip()]:
         samples, rate = kokoro.create(para, voice=KOKORO_VOICE, speed=KOKORO_SPEED, lang=KOKORO_LANG)
         chunks += [samples, np.zeros(int(rate * 0.4), dtype=samples.dtype)]
     audio = np.concatenate(chunks)
