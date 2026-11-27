@@ -4,51 +4,113 @@ on:
     branches: [main]
     paths: ['episodes/*.txt']
   workflow_dispatch:
+    inputs:
+      date:
+        description: 'Episode date (YYYY-MM-DD). Blank = newest episode without audio.'
+        required: false
+      engine:
+        description: 'omnivoice (two cloned hosts) or kokoro (fast fallback voices)'
+        required: false
+        default: omnivoice
 permissions:
   contents: write
-concurrency: build-audio
+concurrency:
+  group: build-audio
+  cancel-in-progress: false
+
 jobs:
-  build:
+  plan:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    outputs:
+      date: ${{ steps.pick.outputs.date }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: pick
+        run: |
+          d="${{ inputs.date }}"
+          if [ -z "$d" ]; then
+            for f in $(ls episodes/*.txt | sort -r); do
+              b=$(basename "$f" .txt)
+              if [ ! -s "docs/audio/$b.mp3" ]; then d=$b; break; fi
+            done
+          fi
+          echo "date=$d" >> "$GITHUB_OUTPUT"
+          echo "Episode to build: ${d:-none}"
+
+  # OmniVoice runs about 4x slower than real time on one runner, so six runners share the turns.
+  render:
+    needs: plan
+    if: needs.plan.outputs.date != '' && inputs.engine != 'kokoro'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: true
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -q kokoro-onnx soundfile
+      - name: Install OmniVoice (CPU)
+        run: |
+          pip install -q torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install -q omnivoice==0.2.1 soundfile
       - uses: actions/cache@v4
         with:
-          path: models
-          key: kokoro-v1.0
-      - name: Fetch the voice model (cached after the first run)
-        run: |
-          mkdir -p models
-          base=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0
-          [ -s models/kokoro-v1.0.onnx ] || curl -sSL -o models/kokoro-v1.0.onnx $base/kokoro-v1.0.onnx
-          [ -s models/voices-v1.0.bin ] || curl -sSL -o models/voices-v1.0.bin $base/voices-v1.0.bin
-          ls -la models
-      - name: Build any missing audio
+          path: ~/.cache/huggingface
+          key: hf-omnivoice-v1
+      - name: Render my share of the turns
+        run: python tools/make_episode.py render "${{ needs.plan.outputs.date }}" --shard ${{ matrix.shard }} --of 6
+      - uses: actions/upload-artifact@v4
+        with:
+          name: parts-${{ matrix.shard }}
+          path: parts/
+          retention-days: 3
+
+  publish:
+    needs: [plan, render]
+    if: always() && needs.plan.outputs.date != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATE: ${{ needs.plan.outputs.date }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -q soundfile numpy
+      - uses: actions/download-artifact@v4
+        if: needs.render.result == 'success'
+        with:
+          pattern: parts-*
+          merge-multiple: true
+          path: parts/
+      - name: Join the OmniVoice turns
+        id: omni
+        if: needs.render.result == 'success'
+        continue-on-error: true
+        run: python tools/make_episode.py assemble "$DATE"
+      - name: Fall back to Kokoro voices
+        if: steps.omni.outcome != 'success'
         env:
           BRIEF_TTS: kokoro
         run: |
-          for f in episodes/*.txt; do
-            d=$(basename "$f" .txt)
-            if [ ! -s "docs/audio/$d.mp3" ]; then
-              for i in 1 2; do
-                python tools/make_episode.py "$d" && break
-                sleep 5
-              done
-              [ -s "docs/audio/$d.mp3" ] || exit 1
-            fi
-          done
+          echo "::warning::OmniVoice did not finish; building this episode with the Kokoro fallback voices."
+          pip install -q kokoro-onnx
+          mkdir -p models
+          base=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0
+          curl -sSL -o models/kokoro-v1.0.onnx $base/kokoro-v1.0.onnx
+          curl -sSL -o models/voices-v1.0.bin $base/voices-v1.0.bin
+          rm -rf parts
+          python tools/make_episode.py all "$DATE"
       - name: Commit and push
         run: |
           git config user.name "morning-brief-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add docs
           if ! git diff --cached --quiet; then
-            git commit -m "Audio $(TZ=Australia/Sydney date +%F)"
-            git pull --rebase
-            git push
+            git commit -m "Audio $DATE"
+            for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done
           fi
