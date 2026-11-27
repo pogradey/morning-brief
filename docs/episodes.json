@@ -158,15 +158,15 @@
    }
   ],
   "watch": "The Victorian state election tomorrow, then the RBA board meeting on 7-8 December.",
-  "seconds": 293,
-  "words": 783,
-  "engine": "kokoro",
+  "seconds": 279,
+  "words": 787,
+  "engine": "omnivoice",
   "hosts": [
    "Host A",
    "Host B"
   ],
   "audio": "audio/2026-11-27.mp3",
-  "bytes": 2241528
+  "bytes": 2262744
  },
  {
   "date": "2026-11-13",
