@@ -43,10 +43,12 @@ Shape:
    other asks the obvious question or says why it matters to Pearce (rates, rent, jobs, HECS, super, investing,
    prices, working in the AI era, his health). Concrete, never vague. Swap who leads from story to story.
 4. "One to watch": one thing due today or this week (a data release, an RBA meeting, earnings, a vote).
-5. A two-turn sign-off, a few words each.
+5. A two-turn sign-off, four to ten words each. The brief comes out every day, weekends included, so never say
+   "talk Monday" or "see you next week"; "See you tomorrow" works any day.
 
 Make it sound like two smart friends talking, not a news reader:
 - Turns are short: one to three sentences, rarely more than 40 words. Plenty of quick back-and-forth.
+  Every turn is at least four words: a two-word line ("Talk Monday.") can come out silent.
 - Real reactions: a short question, a "wait, really?", a dry joke when it fits, the other host building on a point.
   Never fake enthusiasm, never small talk that wastes his time.
 - Performance tags the voice acts out instead of reading: `[laughter]`, `[sigh]`, `[surprise-oh]`,

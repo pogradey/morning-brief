@@ -146,11 +146,11 @@ class OmniVoiceSpeaker:
                         for name, h in HOSTS.items()}
         print(f"OmniVoice ready in {time.time() - t0:.0f}s on {torch.get_num_threads()} threads", flush=True)
 
-    def say(self, host: str, text: str, seed: int) -> np.ndarray:
+    def say(self, host: str, text: str, seed: int, duration: float | None = None) -> np.ndarray:
         self.torch.manual_seed(seed)
         audio = self.model.generate(text=text, language="English", voice_clone_prompt=self.prompts[host],
-                                    num_step=int(CONFIG.get("num_step", 16)),
-                                    speed=float(HOSTS[host].get("speed", 1.0)))[0]
+                                    num_step=int(CONFIG.get("num_step", 16)), duration=duration,
+                                    speed=None if duration else float(HOSTS[host].get("speed", 1.0)))[0]
         return np.asarray(audio, dtype=np.float32).reshape(-1)
 
 
@@ -164,6 +164,21 @@ class KokoroSpeaker:
         samples, _ = self.kokoro.create(text, voice=h["kokoro"], speed=float(h.get("kokoro_speed", 1.05)),
                                         lang=h.get("kokoro_lang", "en-us"))
         return np.asarray(samples, dtype=np.float32).reshape(-1)
+
+
+def say_safely(speaker, host: str, text: str, seed: int, label: str) -> np.ndarray:
+    """Very short lines ("See you then.") can come back near-silent. Retry them with a set length; never fail
+    the whole episode over one short line unless it is completely empty."""
+    audio = speaker.say(host, text, seed=seed)
+    if len(audio) >= SR * 0.25 or not isinstance(speaker, OmniVoiceSpeaker):
+        return audio
+    target = max(0.9, 0.38 * spoken_words(text) + 0.3)
+    print(f"{label}: only {len(audio) / SR:.2f}s, retrying at {target:.1f}s", flush=True)
+    retry = speaker.say(host, text, seed=seed + 500, duration=target)
+    best = retry if len(retry) > len(audio) else audio
+    if len(best) == 0:
+        raise RuntimeError(f"{label} came back empty")
+    return best
 
 
 def render(date: str, shard: int, of: int) -> None:
@@ -180,9 +195,7 @@ def render(date: str, shard: int, of: int) -> None:
         host, said = turns[i]
         pieces = []
         for k, piece in enumerate(chunks(said)):
-            audio = speaker.say(host, piece, seed=1000 * (i + 1) + k)
-            if len(audio) < SR * 0.25:
-                raise RuntimeError(f"turn {i + 1} ({host}) came back empty")
+            audio = say_safely(speaker, host, piece, seed=1000 * (i + 1) + k, label=f"turn {i + 1} ({host})")
             pieces += [level(audio), silence(PIECE_GAP_MS)]
         sf.write(str(out / f"turn_{i:03d}.flac"), np.concatenate(pieces[:-1]), SR)
         print(f"shard {shard}: turn {i + 1} ({host}) done, {n}/{len(mine)}, {time.time() - t0:.0f}s", flush=True)
