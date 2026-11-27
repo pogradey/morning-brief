@@ -1,0 +1,12 @@
+HOSTA: Good afternoon Pearce. It's Friday the twenty-seventh of November, and this is a sound check, not a real brief.
+HOSTB: Yep, just us testing the new setup. [laughter] No news today, I promise.
+HOSTA: So here's what's changed. Instead of one voice reading at you, it's the two of us now.
+HOSTB: We'll go through the markets, then the six to eight stories that actually matter, and for each one, why it matters to you.
+HOSTA: Rates, rent, jobs, your super, the A I tools you use. [confirmation-en] The stuff that changes your week.
+HOSTB: And it's still about five minutes. Short enough for the drive.
+HOSTA: There's also a written version now. Every episode comes with a news page, with a proper summary of each story and links to the sources.
+HOSTB: It's in the email too, so you can read it if you can't listen. [surprise-oh] Or skim it at the lights. Actually, don't do that.
+HOSTA: [laughter] Fair. The first real one lands tomorrow morning, before nine.
+HOSTB: If you want more of something, or less, just say so in Claude, and we'll change it.
+HOSTA: That's the sound check. Talk tomorrow.
+HOSTB: See you then.
