@@ -90,7 +90,7 @@ git add episodes/DATE.txt episodes/DATE.json && git commit -m "Brief DATE" && gi
 If the push is rejected, `git pull --rebase origin main` and push again. Then check
 `https://pogradey.github.io/morning-brief/audio/DATE.mp3` every 30 seconds for up to 20 minutes until it returns
 HTTP 200 (use one `until` loop, not repeated sleeps). If it never goes live, send the email anyway and say in it that
-the audio is delayed. Once it is live, `git pull`: the build has written the email for you at `docs/email/DATE.html` and the audio length
+the audio is delayed. Once it is live, `git pull origin main`: the build has written the email for you at `docs/email/DATE.html` and the audio length
 is `seconds` for DATE in `docs/episodes.json`.
 
 ## 6. Email
