@@ -13,7 +13,7 @@ Commands:
 
 Engines (BRIEF_TTS):
 - omnivoice (default): k2-fsa OmniVoice, the engine behind VoiceStudio. Each host is cloned from a short
-  reference clip in voices/, so the voices stay the same every day. CPU only, about 4x slower than real
+  reference clip in voices/, so the voices stay the same every day. CPU only, about 6.5x slower than real
   time on a GitHub runner, so the workflow splits the turns across several runners.
 - kokoro: the small offline Kokoro model with one stock voice per host. The workflow falls back to it
   if OmniVoice fails, so an episode always ships.
@@ -136,7 +136,7 @@ class OmniVoiceSpeaker:
         import torch
         from omnivoice.models.omnivoice import OmniVoice
 
-        torch.set_num_threads(os.cpu_count() or 4)
+        # Leave torch on its default thread count: on a 4-vCPU runner, 4 threads ran twice as slow as 2.
         t0 = time.time()
         self.torch = torch
         self.model = OmniVoice.from_pretrained("k2-fsa/OmniVoice", device_map="cpu", dtype=torch.float32)

@@ -37,7 +37,7 @@ jobs:
           echo "date=$d" >> "$GITHUB_OUTPUT"
           echo "Episode to build: ${d:-none}"
 
-  # OmniVoice runs about 4x slower than real time on one runner, so six runners share the turns.
+  # OmniVoice runs about 6.5x slower than real time on one runner, so eight runners share the turns.
   render:
     needs: plan
     if: needs.plan.outputs.date != '' && inputs.engine != 'kokoro'
@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        shard: [0, 1, 2, 3, 4, 5]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -61,7 +61,7 @@ jobs:
           path: ~/.cache/huggingface
           key: hf-omnivoice-v1
       - name: Render my share of the turns
-        run: python tools/make_episode.py render "${{ needs.plan.outputs.date }}" --shard ${{ matrix.shard }} --of 6
+        run: python tools/make_episode.py render "${{ needs.plan.outputs.date }}" --shard ${{ matrix.shard }} --of 8
       - uses: actions/upload-artifact@v4
         with:
           name: parts-${{ matrix.shard }}
