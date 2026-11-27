@@ -1,0 +1,49 @@
+{
+ "threads": 4,
+ "load_s": 23.6,
+ "a_male_aus": {
+  "audio_s": 10.6,
+  "took_s": 133.3,
+  "x_realtime": 12.57
+ },
+ "b_female_aus": {
+  "audio_s": 10.7,
+  "took_s": 133.6,
+  "x_realtime": 12.52
+ },
+ "c_male_brit": {
+  "audio_s": 10.8,
+  "took_s": 133.9,
+  "x_realtime": 12.41
+ },
+ "d_female_us": {
+  "audio_s": 10.7,
+  "took_s": 133.8,
+  "x_realtime": 12.48
+ },
+ "e_male_us": {
+  "audio_s": 10.8,
+  "took_s": 133.4,
+  "x_realtime": 12.3
+ },
+ "f_female_brit": {
+  "audio_s": 10.4,
+  "took_s": 133.4,
+  "x_realtime": 12.87
+ },
+ "g_male_aus_mid": {
+  "audio_s": 10.1,
+  "took_s": 134.6,
+  "x_realtime": 13.34
+ },
+ "h_female_aus_low": {
+  "audio_s": 10.2,
+  "took_s": 133.7,
+  "x_realtime": 13.05
+ },
+ "clone_16step": {
+  "audio_s": 13.7,
+  "took_s": 160.9,
+  "x_realtime": 11.74
+ }
+}
