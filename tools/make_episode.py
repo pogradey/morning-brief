@@ -31,6 +31,8 @@ from xml.sax.saxutils import escape
 
 import numpy as np
 
+import news_page
+
 ENGINE = os.environ.get("BRIEF_TTS", "omnivoice")
 KOKORO_DIR = pathlib.Path(os.environ.get("KOKORO_DIR", "models"))
 MAX_WORDS = 950
@@ -236,6 +238,7 @@ def update_index(meta: dict) -> None:
     cutoff = (dt.date.fromisoformat(date) - dt.timedelta(days=KEEP_DAYS)).isoformat()
     for old in [e for e in episodes if e["date"] < cutoff]:
         (DOCS / old["audio"]).unlink(missing_ok=True)
+        (DOCS / "email" / f"{old['date']}.html").unlink(missing_ok=True)
     episodes = [e for e in episodes if e["date"] >= cutoff]
     index.write_text(json.dumps(episodes, indent=1, ensure_ascii=False), encoding="utf-8")
 
@@ -261,6 +264,7 @@ def update_index(meta: dict) -> None:
         + "".join(items) + "</channel></rss>\n"
     )
     (DOCS / "feed.xml").write_text(feed, encoding="utf-8")
+    print(f"news page: {news_page.write(meta, DOCS).relative_to(ROOT)}")
 
 
 def main() -> None:

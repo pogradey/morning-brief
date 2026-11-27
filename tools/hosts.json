@@ -1,0 +1,10 @@
+{
+ "about": "The two hosts. They have no names on air. HOSTA is a young Australian man (voice design: male, young adult, low pitch, australian accent). HOSTB is a young Australian woman (female, young adult, moderate pitch, australian accent). Each is cloned from the clip in voices/ and ref_text is exactly what that clip says.",
+ "hosts": {
+  "HOSTA": {"display": "Host A", "ref": "voices/hosta.flac", "ref_text": "Good morning, Pearce. So the big story today is inflation. It jumped to four point nine per cent, and honestly, that puts the Reserve Bank in a really tricky spot. Let's get into it.", "kokoro": "am_michael"},
+  "HOSTB": {"display": "Host B", "ref": "voices/hostb.flac", "ref_text": "Good morning, Pearce. So the big story today is inflation. It jumped to four point nine per cent, and honestly, that puts the Reserve Bank in a really tricky spot. Let's get into it.", "kokoro": "af_heart"}
+ },
+ "num_step": 16,
+ "turn_gap_ms": 260,
+ "seed": 7
+}

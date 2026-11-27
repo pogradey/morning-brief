@@ -23,9 +23,9 @@ Cover the period since the last episode (normally 24 hours).
   or the balance of power in the world? If not, drop it.
 
 ## 3. Write the script: `episodes/DATE.txt`
-The episode is a conversation between two hosts. Their names and who they are live in `tools/hosts.json`
-(read it). Use exactly those names. Plain text, one turn per line, each line starting with the host's name in
-capitals and a colon:
+The episode is a conversation between two hosts, a young Australian man (`HOSTA`) and a young Australian woman
+(`HOSTB`), described in `tools/hosts.json`. They have no names on air: they never name themselves or each
+other, and speak to Pearce as "you". Plain text, one turn per line, each line starting with `HOSTA:` or `HOSTB:`:
 
 ```
 HOSTA: Good morning Pearce. It's Saturday the twenty-eighth of November.
@@ -59,17 +59,27 @@ Make it sound like two smart friends talking, not a news reader:
 - Politically neutral. Report what each side said. No investment advice: explain what moved and why, never what to buy.
   The hosts may disagree about what matters, never about facts.
 
-## 4. Write the data file: `episodes/DATE.json`
+## 4. Write the news page data: `episodes/DATE.json`
+This file becomes the written news page that goes with the audio: on the website and as the email itself. Write
+it for reading, not listening: digits are fine here ("4.9%", "$2bn").
 ```json
 {
   "date": "DATE",
   "title": "Short headline of the top story",
+  "lede": "Two sentences: what today is really about.",
   "markets": [{"name": "ASX 200", "value": "8,412", "move": "+0.5%"}],
-  "stories": [{"tag": "Economy", "headline": "...", "why": "...", "sources": ["https://..."]}],
-  "watch": "..."
+  "stories": [{
+    "tag": "Economy",
+    "headline": "Clear, specific headline",
+    "summary": "60 to 110 words: what happened, the key numbers, who said what, what happens next.",
+    "why": "One or two sentences on why it matters to Pearce specifically.",
+    "sources": [{"title": "Reuters", "url": "https://..."}]
+  }],
+  "watch": "One thing due today or this week, and why it matters."
 }
 ```
-Tags: Economy, Markets, AI, Tech, Health, Politics, World. Sources are the real URLs you used.
+Include every story the hosts talk about, in the same order. Tags: Economy, Markets, AI, Tech, Health, Politics,
+World. Sources are the real https URLs you used, with the outlet's name as the title. Valid JSON only.
 
 ## 5. Publish
 Do not make the audio yourself. A GitHub Action in this repository builds the two-host MP3 when the script is
@@ -80,14 +90,18 @@ git add episodes/DATE.txt episodes/DATE.json && git commit -m "Brief DATE" && gi
 If the push is rejected, `git pull --rebase` and push again. Then check
 `https://pogradey.github.io/morning-brief/audio/DATE.mp3` every 30 seconds for up to 20 minutes until it returns
 HTTP 200 (use one `until` loop, not repeated sleeps). If it never goes live, send the email anyway and say in it that
-the audio is delayed. To learn the audio length for the email subject, `git pull` and read `seconds` for DATE in
-`docs/episodes.json`.
+the audio is delayed. Once it is live, `git pull`: the build has written the email for you at `docs/email/DATE.html` and the audio length
+is `seconds` for DATE in `docs/episodes.json`.
 
 ## 6. Email
 With the Gmail connector, send one email to the address given in the routine prompt:
 - Subject: `Morning Brief: <weekday> <day> <month> (<minutes> min)`
-- Body: line 1 is the play link `https://pogradey.github.io/morning-brief/`, then the headlines as a short list.
-If the Gmail tools are missing, skip the email and say so in your summary.
+- `htmlBody`: the contents of `docs/email/DATE.html`, exactly as the build wrote it. Do not rewrite it.
+- `body` (the plain-text version): the play link `https://pogradey.github.io/morning-brief/?d=DATE`, then each
+  headline on its own line.
+If the audio never went live, run `python3 tools/news_page.py DATE /tmp` and send `/tmp/email/DATE.html` as the
+`htmlBody` anyway (do not commit it), with "Audio is running late, it will be on the page shortly." as the first
+line of `body`. If the Gmail tools are missing, skip the email and say so in your summary.
 
 ## 7. Finish
 End with three lines: the top story, the word count and audio length, and whether the email was sent.

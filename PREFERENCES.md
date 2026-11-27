@@ -17,7 +17,8 @@ Pearce gives feedback in Claude chat on his laptop; Claude adds a dated line und
   4. Politics (Australian federal and NSW, then US and world)
   5. Big world news
 - Leave out: celebrity, sport results, crime-of-the-day, viral clips, lifestyle tips, product launches that are just ads.
-- Voice: en-US-AndrewMultilingualNeural at +8% speed (set in tools/make_episode.py).
+- Format: two hosts talking (a young Australian man and woman, no names on air), not one narrator. Voices are
+  OmniVoice clones of the clips in voices/ (set in tools/hosts.json).
 
 ## Learned
-(nothing yet)
+- 2026-11-27: Pearce found one monotone voice boring. Two hosts, natural back-and-forth, real reactions. Ready by 9am.
