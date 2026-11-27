@@ -1,0 +1,80 @@
+{
+  "date": "2026-11-28",
+  "title": "Victoria votes today, with Labor tipped to lose",
+  "lede": "Victorians are choosing a government today after twelve years of Labor, and polls point to a Coalition win under Jess Wilson. Wall Street also finished its best week in more than a year.",
+  "markets": [
+    {"name": "ASX 200", "value": "8,834", "move": "+0.8% (week +2.8%)"},
+    {"name": "S&P 500", "value": "7,297", "move": "+1.6% (week +5.6%)"},
+    {"name": "Nasdaq", "value": "24,130", "move": "+2.3%"},
+    {"name": "AUD/USD", "value": "0.667", "move": "+0.5%"},
+    {"name": "Brent crude", "value": "US$90.84", "move": "-0.9%"},
+    {"name": "Gold", "value": "~US$3,700", "move": "+3.8% (futures)"},
+    {"name": "Bitcoin", "value": "~US$62,000", "move": "reported"}
+  ],
+  "stories": [
+    {
+      "tag": "Politics",
+      "headline": "Victoria votes as Labor faces a heavy defeat",
+      "summary": "Election day has arrived in Victoria, with about half of the state's 4.7 million voters already having voted early or by post. The final Newspoll (20-25 November) had the Coalition on 33% of the primary vote, Labor 20%, One Nation 18% and the Greens 17%, with the Coalition ahead 57.5 to 42.5 after preferences. Labor, now led by Ben Carroll after Jacinta Allan resigned in July, has been hurt by Big Build corruption allegations and state debt. Liberal leader Jess Wilson may form government with a historically low primary vote, and One Nation is expected to win more than 20%. ABC election coverage starts at 6pm AEDT.",
+      "why": "A big swing against Labor in Victoria is a warning sign about cost-of-living anger that federal Labor will also face.",
+      "sources": [
+        {"title": "ABC News", "url": "https://www.abc.net.au/news/2026-11-28/victorian-election-day-arrives-ben-carroll-jess-wilson/107422598"},
+        {"title": "The Conversation", "url": "https://theconversation.com/coalition-set-for-a-big-win-in-victorian-election-as-one-nation-fades-in-final-polls-297630"},
+        {"title": "The Guardian", "url": "https://www.theguardian.com/australia-news/2026/nov/28/vic-election-labor-faces-electoral-wipeout-as-voters-turn-to-liberals-and-one-nation-ntwnfb"}
+      ]
+    },
+    {
+      "tag": "Economy",
+      "headline": "RBA tipped to hold at 4.85% as recession fears grow",
+      "summary": "The Reserve Bank has raised the cash rate by 125 basis points this year to 4.85%. After October inflation jumped to 4.9% (trimmed mean 3.8%), a hold at the 7-8 December meeting is still the most likely outcome, though further hikes cannot be ruled out. Governor Michele Bullock has warned the economy will feel like a recession, and a Guardian report says mortgage holders' confidence is at its lowest since 1994. Treasurer Jim Chalmers has flagged that his mid-year budget update will forecast slower growth and higher unemployment, and the AFR says economists are pointing him to spending cuts.",
+      "why": "Mortgage and rent pressure is not easing yet, and a weaker jobs market hits young graduates first.",
+      "sources": [
+        {"title": "InvestingLive", "url": "https://investinglive.com/central-banks/australia-trimmed-mean-cpi-jumps-to-3-8-in-october-keeping-further-rba-hike-risk-alive/"},
+        {"title": "The Conversation", "url": "https://theconversation.com/inflation-jumps-to-4-9-as-fuel-prices-surge-but-the-rba-should-hold-rates-steady-297288"},
+        {"title": "AFR", "url": "https://www.afr.com/policy/economy/here-s-where-experts-say-jim-chalmers-should-look-for-spending-cuts-20261127-p61cmy"}
+      ]
+    },
+    {
+      "tag": "Markets",
+      "headline": "Wall Street posts its best week in over a year as Anthropic and Nvidia swing",
+      "summary": "The S&P 500 rose 1.6% on Friday to 7,297 and gained 5.6% for the week, its strongest since April 2025. The Dow added 1.2% and the Nasdaq 2.3%. Anthropic, which raised a record US$93.5 billion in its IPO last week, rose 11% to US$91.88, above its US$83 issue price after dipping below it on Tuesday. Nvidia rattled markets after CEO Jensen Huang resigned and was then reinstated, with CNBC reporting the shares jumped more than 30% on the day he returned. The 10-year Treasury yield rose to 4.94%.",
+      "why": "If your super is in index funds, you own a lot of these AI stocks, so their swings flow into your balance.",
+      "sources": [
+        {"title": "AP via BNN Bloomberg", "url": "https://www.bnnbloomberg.ca/markets/2026/11/27/stocks-jump-to-close-out-an-erratic-week-that-was-also-wall-streets-best-in-more-than-a-year/"},
+        {"title": "CNBC", "url": "https://www.cnbc.com/2026/11/23/anthropic-nvidia-shares.html"},
+        {"title": "Market Index", "url": "https://www.marketindex.com.au/news/evening-wrap-asx-200-ends-week-on-a-high-as-6-surge-in-copper-futures-sparks"}
+      ]
+    },
+    {
+      "tag": "Tech",
+      "headline": "Schools push back on Google's AI search summaries",
+      "summary": "Los Angeles school officials have quietly disabled Google's AI Overview summaries on school-issued devices. Google says search and AI are deeply integrated and told The New York Times that if schools ban AI, students will not have access to search. New York and Los Angeles announced one-year moratoriums on student use of generative AI in September, and hundreds of Google employees have signed a petition asking for a way to turn AI features off without losing search.",
+      "why": "It is an early test of whether AI can be switched off inside everyday tools you rely on for study and work.",
+      "sources": [
+        {"title": "AP via PBS NewsHour", "url": "https://www.pbs.org/newshour/education/as-google-threatens-to-cut-schools-search-access-los-angeles-blocks-ai-features"}
+      ]
+    },
+    {
+      "tag": "Health",
+      "headline": "New drug roughly doubles survival in advanced pancreatic cancer",
+      "summary": "The US FDA has approved daraxonrasib for metastatic pancreatic cancer in patients whose disease has progressed on at least one earlier treatment. In the trial, median overall survival was 13.2 months versus 6.7 months on chemotherapy, and the European Commission has also approved it. It is not a cure, but it is the first of a new class of targeted RAS-blocking drugs for one of the deadliest cancers.",
+      "why": "A real step forward for a cancer with few options, and a sign of how fast targeted drugs are moving from trial to patients.",
+      "sources": [
+        {"title": "Memorial Sloan Kettering", "url": "https://www.mskcc.org/news/how-daraxonrasib-could-improve-pancreatic-cancer-treatment-offering-new-hope"},
+        {"title": "CancerNetwork", "url": "https://www.cancernetwork.com/view/ec-approves-daraxonrasib-for-previously-treated-metastatic-pancreatic-cancer"}
+      ]
+    },
+    {
+      "tag": "World",
+      "headline": "Trump urges Russia and Ukraine not to expand the war as the Iran conflict drags on",
+      "summary": "After meeting NATO chief Mark Rutte at Mar-a-Lago, Donald Trump urged both Russia and Ukraine to avoid actions that expand the war; his wording added Ukraine to a statement NATO framed around Russia. Last month he waived sanctions on a Russian diesel deal aimed at lowering fuel prices, which drew criticism from European leaders and Republicans. Ukraine's president Volodymyr Zelensky has publicly criticised Trump's warm stance toward Vladimir Putin. Meanwhile the US war with Iran continues; Brent crude has swung between US$72 and US$114 since February and closed Friday at US$90.84.",
+      "why": "The war keeps oil high, which keeps petrol and shipping costs, and inflation, high.",
+      "sources": [
+        {"title": "TIME", "url": "https://time.com/article/2026/11/26/trump-warns-putin-russia-to-pull-back-military-aggression-europe-ukraine-war/"},
+        {"title": "Newsweek", "url": "https://www.newsweek.com/trump-adds-two-words-that-change-meaning-of-nato-statement-12773417"},
+        {"title": "Al Arabiya", "url": "https://english.alarabiya.net/News/world/2026/11/27/ukraine-s-zelenskyy-compares-trump-s-friendship-with-putin-to-friendship-with-hitler"}
+      ]
+    }
+  ],
+  "watch": "Victoria's election count tonight, then the RBA decision on 7-8 December, which markets expect to be a hold."
+}
