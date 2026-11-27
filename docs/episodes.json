@@ -1,5 +1,30 @@
 [
  {
+  "date": "2026-11-27",
+  "title": "Sound check: the new two-host Morning Brief",
+  "lede": "A short test of the new format. Two hosts instead of one voice, and a written news page with every episode. The first real brief arrives tomorrow before 9am.",
+  "markets": [],
+  "stories": [
+   {
+    "tag": "Tech",
+    "headline": "What's new in the brief",
+    "summary": "Each morning the brief is researched, written as a conversation between two hosts and voiced with OmniVoice, the open-source engine behind VoiceStudio. It still runs about five minutes: markets first, then six to eight stories that matter, each with a line on why it matters to you.",
+    "why": "You get the same information in less time, in a format that's easier to keep listening to, plus a written version to skim.",
+    "sources": []
+   }
+  ],
+  "watch": "Tomorrow's first real two-host brief, in your inbox before 9am.",
+  "seconds": 61,
+  "words": 184,
+  "engine": "omnivoice",
+  "hosts": [
+   "Host A",
+   "Host B"
+  ],
+  "audio": "audio/2026-11-27.mp3",
+  "bytes": 477960
+ },
+ {
   "date": "2026-11-13",
   "title": "Sound check: your brief starts tomorrow",
   "markets": [],
