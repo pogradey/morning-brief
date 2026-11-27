@@ -24,12 +24,12 @@ jobs:
           path: ~/.cache/huggingface
           key: hf-omnivoice-v1
       - name: Run the test
-        run: python tools/voice_test.py 2>&1 | tee voicetest/run.log
+        run: mkdir -p voicetest && python tools/voice_test.py 2>&1 | tee voicetest/run.log
       - name: Save results to the branch
         if: always()
         run: |
           git config user.name "morning-brief-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add voicetest
+          git add -f voicetest
           git commit -m "Voice test results" || exit 0
           git push
