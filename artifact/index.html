@@ -1,0 +1,164 @@
+<title>Morning Brief</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  /* Layout: one reading column. Player card on top, then market strip, then stories like a front page. */
+  :root {
+    --bg: #f4f6fa; --panel: #ffffff; --ink: #14213d; --dim: #5b6680; --line: #dde2ec;
+    --sun: #d9731a; --sun-soft: #fdf0e3; --up: #1e8e5a; --down: #c0392b;
+    --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --body: "Inter", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #0d1424; --panel: #161f33; --ink: #eef1f7; --dim: #9aa5bd; --line: #26314a;
+    --sun: #ffad5a; --sun-soft: #2a2118; --up: #5fd39a; --down: #ff8a80; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #0d1424; --panel: #161f33; --ink: #eef1f7; --dim: #9aa5bd; --line: #26314a;
+    --sun: #ffad5a; --sun-soft: #2a2118; --up: #5fd39a; --down: #ff8a80; color-scheme: dark }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body);
+    padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  main { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+  .eyebrow { font: 600 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--dim);
+    display: flex; gap: 8px; align-items: center; }
+  .eyebrow i { width: 9px; height: 9px; border-radius: 50%; background: var(--sun); }
+  h1 { font: 700 clamp(26px, 6.5vw, 36px)/1.15 var(--display); margin: 10px 0 0; letter-spacing: -.02em; text-wrap: balance; }
+  .lede { font-size: 17px; margin: 10px 0 0; max-width: 62ch; }
+
+  .player { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px;
+    display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
+  .play { width: 64px; height: 64px; border-radius: 50%; border: 0; cursor: pointer; background: var(--sun);
+    color: #fff; display: grid; place-items: center; }
+  .play:focus-visible, .skip:focus-visible, .speed:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .play svg { width: 28px; height: 28px; }
+  .track { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+  .hosts { font-size: 13px; color: var(--dim); }
+  .bar { height: 6px; border-radius: 6px; background: var(--line); cursor: pointer; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--sun); }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  .ctl { display: flex; gap: 6px; }
+  .skip, .speed { font: 500 12px var(--body); color: var(--ink); background: none; border: 1px solid var(--line);
+    border-radius: 14px; padding: 3px 10px; cursor: pointer; }
+
+  .markets { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 7px 11px; font-size: 12px; color: var(--dim); }
+  .chip b { display: block; font: 600 15px var(--body); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .up { color: var(--up); } .down { color: var(--down); }
+
+  h2 { font: 600 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin: 6px 0 0; }
+  .stories { display: flex; flex-direction: column; }
+  article { padding: 18px 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+  .tag { font: 600 11px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--sun); }
+  article h3 { font: 700 20px/1.25 var(--display); margin: 0; text-wrap: balance; }
+  article p { margin: 0; max-width: 64ch; }
+  .why { background: var(--sun-soft); border-radius: 10px; padding: 10px 12px; font-size: 15px; }
+  .why b { color: var(--sun); }
+  .src { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; }
+  .src a { color: var(--dim); }
+  .watch { border: 1px dashed var(--line); border-radius: 12px; padding: 14px; }
+  .foot { font-size: 13px; color: var(--dim); }
+  .foot a { color: var(--ink); }
+  .empty { color: var(--dim); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <div class="eyebrow"><i></i><span id="date">Morning Brief</span></div>
+    <h1 id="title">Loading today&rsquo;s brief&hellip;</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+
+  <section class="player" aria-label="Audio player">
+    <button class="play" id="play" aria-label="Play">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path id="icon" d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="track">
+      <div class="hosts" id="hosts">Two hosts &middot; about five minutes</div>
+      <div class="bar" id="bar" role="slider" aria-label="Seek" tabindex="0"><span id="fill"></span></div>
+      <div class="row">
+        <span id="now">0:00</span>
+        <span class="ctl">
+          <button class="skip" id="back" aria-label="Back 15 seconds">&minus;15s</button>
+          <button class="speed" id="speed">1×</button>
+          <button class="skip" id="fwd" aria-label="Forward 15 seconds">+15s</button>
+        </span>
+        <span id="len">0:00</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="markets" id="markets"></div>
+  <section class="stories" id="stories"></section>
+  <div id="watch"></div>
+  <p class="foot">Earlier episodes and the podcast feed: <a href="https://pogradey.github.io/morning-brief/" target="_blank" rel="noopener">pogradey.github.io/morning-brief</a></p>
+</main>
+<audio id="audio" preload="metadata" src="episode.mp3"></audio>
+
+<script>
+const $ = id => document.getElementById(id);
+const audio = $('audio');
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const nice = d => new Date(d + 'T09:00:00').toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const PLAY = 'M8 5v14l11-7z', PAUSE = 'M6 5h4v14H6zM14 5h4v14h-4z';
+
+function render(e) {
+  $('date').textContent = 'Morning Brief \u00b7 ' + nice(e.date);
+  $('title').textContent = e.title || 'Morning Brief';
+  $('lede').textContent = e.lede || '';
+  if (e.seconds) $('len').textContent = fmt(e.seconds);
+  $('hosts').textContent = 'Two hosts \u00b7 ' + fmt(e.seconds) + ' \u00b7 ' + (e.stories || []).length + ' stories';
+
+  const m = $('markets'); m.replaceChildren();
+  (e.markets || []).forEach(x => {
+    const c = el('div', 'chip'); c.append(el('span', '', x.name || ''));
+    const b = el('b', '', (x.value || '') + ' ');
+    b.append(el('span', /^[-−]/.test(x.move || '') ? 'down' : 'up', x.move || ''));
+    c.append(b); m.append(c);
+  });
+
+  const s = $('stories'); s.replaceChildren();
+  if ((e.stories || []).length) s.append(el('h2', '', 'The stories'));
+  (e.stories || []).forEach(x => {
+    const a = el('article');
+    a.append(el('div', 'tag', x.tag || ''), el('h3', '', x.headline || ''));
+    if (x.summary) a.append(el('p', '', x.summary));
+    if (x.why) { const w = el('div', 'why'); w.append(el('b', '', 'Why it matters to you: '), document.createTextNode(x.why)); a.append(w); }
+    const src = el('div', 'src');
+    (x.sources || []).forEach(item => { try {
+      const url = typeof item === 'string' ? item : item.url;
+      const u = new URL(url); if (u.protocol !== 'https:') return;
+      const link = el('a', '', (typeof item === 'object' && item.title) || u.hostname.replace(/^www\./, ''));
+      link.href = u.href; link.target = '_blank'; link.rel = 'noopener'; src.append(link);
+    } catch {} });
+    if (src.childNodes.length) a.append(src);
+    s.append(a);
+  });
+
+  const w = $('watch'); w.replaceChildren();
+  if (e.watch) { const box = el('div', 'watch'); box.append(el('b', '', 'One to watch: '), document.createTextNode(e.watch)); w.append(box); }
+}
+
+$('play').onclick = () => audio.paused ? audio.play().catch(() => {}) : audio.pause();
+$('back').onclick = () => { audio.currentTime -= 15; };
+$('fwd').onclick = () => { audio.currentTime += 15; };
+const speeds = [1, 1.15, 1.3, 1.5]; let si = 0;
+try { si = Math.max(0, speeds.indexOf(+localStorage.getItem('speed'))); } catch {}
+const setSpeed = () => { audio.defaultPlaybackRate = audio.playbackRate = speeds[si]; $('speed').textContent = speeds[si] + '×'; };
+$('speed').onclick = () => { si = (si + 1) % speeds.length; setSpeed(); try { localStorage.setItem('speed', speeds[si]); } catch {} };
+audio.onplay = audio.onpause = () => { $('icon').setAttribute('d', audio.paused ? PLAY : PAUSE); $('play').setAttribute('aria-label', audio.paused ? 'Play' : 'Pause'); };
+audio.onloadedmetadata = () => { setSpeed(); if (isFinite(audio.duration)) $('len').textContent = fmt(audio.duration); };
+audio.ontimeupdate = () => { $('now').textContent = fmt(audio.currentTime); $('fill').style.width = (100 * audio.currentTime / (audio.duration || 1)) + '%'; };
+$('bar').onclick = ev => { const r = $('bar').getBoundingClientRect(); audio.currentTime = (ev.clientX - r.left) / r.width * (audio.duration || 0); };
+$('bar').onkeydown = ev => { if (ev.key === 'ArrowRight') audio.currentTime += 5; if (ev.key === 'ArrowLeft') audio.currentTime -= 5; };
+
+fetch('episode.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(render).catch(() => {
+  $('title').textContent = 'No brief yet';
+  $('lede').textContent = 'The next one arrives after 9am.';
+});
+</script>
